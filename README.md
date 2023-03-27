@@ -3,6 +3,21 @@
 This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf).
 We plan to release our pretrained paraphraser and data in the next 2-3 weeks.
 
+### Requirements
+
+```
+# required
+pip install torch
+pip install transformers
+pip install sklearn
+pip install nltk
+
+# optional
+pip install openai
+pip install rankgen
+```
+
+
 ### Paraphraser notes (differences from paper)
 
 There are two minor differences between the actual model and the paper's description:

@@ -15,7 +15,7 @@ import pickle
 import torch
 from transformers import LogitsWarper
 from dipper_paraphrases.detect_gpt.run import get_perturbation_results
-from sklearn.metrics import roc_curve, precision_recall_curve, auc
+from sklearn.metrics import roc_curve, auc
 
 from dipper_paraphrases.sim.models import load_model
 from dipper_paraphrases.sim.embed_sentences import embed_all, similarity
@@ -25,13 +25,6 @@ from dipper_paraphrases.sim.embed_sentences import embed_all, similarity
 SCRAPER_API_KEY = os.getenv("SCRAPER_API_KEY")
 GPTZERO_API_KEYS = [os.getenv(f"GPTZERO_API_KEY{i}") for i in range(1, 11)]
 gptzero_idx = 0
-
-### SAMPLE OUTPUT
-# "!": -0.0272431,
-# "!\n\n": -8.135782,
-# "!!": -8.312574,
-# "\"": -3.7918115,
-# "\u201d": -8.102049
 
 lfqa_database = None
 with open("lfqa-data/questions_sampled.jsonl", "r") as f:
@@ -317,12 +310,6 @@ def watermark_detect(sequence, cache, watermark_fraction, vocab_size):
         cache_updated = True
 
     return z_val, cache_updated
-
-
-def gptzero_detect_proxy(generation):
-    import pdb; pdb.set_trace()
-    pass
-    r = requests.post(url = 'https://async.scraperapi.com/jobs', json={ 'apiKey': SCRAPER_API_KEY, 'url': 'https://api.gptzero.me/v2/predict/text', 'method': 'POST', 'body': f'document={generation}'})
 
 def hash_fn(x):
     # solution from https://stackoverflow.com/questions/67219691/python-hash-function-that-returns-32-or-64-bits

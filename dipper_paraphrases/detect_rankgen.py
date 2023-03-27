@@ -1,7 +1,5 @@
 import argparse
 import json
-import pickle
-from functools import partial
 import os
 import tqdm
 from utils import rankgen_detect, get_roc, print_tpr_target, print_accuracies, load_shared_args, do_sim_stuff, load_sim_stuff
