@@ -1,5 +1,5 @@
 h5py
-torch==1.4
+torch
 scipy
 sacremoses
 sentencepiece
