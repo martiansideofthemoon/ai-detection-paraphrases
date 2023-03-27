@@ -1,0 +1,8 @@
+h5py
+torch==1.4
+scipy
+sacremoses
+sentencepiece
+jieba
+numpy
+nltk
