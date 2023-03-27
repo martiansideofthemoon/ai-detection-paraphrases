@@ -21,7 +21,7 @@ parser.add_argument('--model', type=str, default='para-paraphrase-ctx-t5-xxl', h
 parser.add_argument("--refresh", action='store_true', help="Renew the data")
 parser.add_argument('--num_shards', type=int, default=1, help='data to paraphrase')
 parser.add_argument('--local_rank', type=int, default=0, help='data to paraphrase')
-parser.add_argument('--sent_interval', type=int, default=1000000, help='data to paraphrase')
+parser.add_argument('--sent_interval', type=int, default=3, help='data to paraphrase')
 args = parser.parse_args()
 
 # read args.output_file
