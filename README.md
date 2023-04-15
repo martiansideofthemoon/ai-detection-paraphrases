@@ -1,7 +1,6 @@
 ## Paraphrasing evades detectors of AI-generated text, but retrieval is an effective defense
 
-This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf).
-We plan to release our pretrained paraphraser and data in the next 2-3 weeks. Please email me (kalpesh@cs.umass.edu) if you want quicker access to the model.
+This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf). We have currently released our model checkpoint and a script to paraphrase data (see details below). We plan to clean up the repository further and release the model checkpoint on the HuggingFace model hub in the next 2 weeks.
 
 ### Requirements
 
@@ -11,12 +10,17 @@ pip install torch
 pip install transformers
 pip install sklearn
 pip install nltk
-
 # optional
 pip install openai
 pip install rankgen
 ```
 
+### Running the Model
+
+**Checkpoint**: https://drive.google.com/file/d/1LJJ1P5X2An0kMn8WAAAJBmxBuNS-5GiK/view?usp=sharing
+**Script**: [`dipper_paraphrases/paraphrase.py`](dipper_paraphrases/paraphrase.py)
+
+Please read the important note in the next section to understand the differences from the paper.
 
 ### Paraphraser notes (differences from paper)
 
