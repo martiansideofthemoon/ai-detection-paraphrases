@@ -2,9 +2,9 @@
 
 This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf). We have currently released our model checkpoint and a script to paraphrase data (see details below). We plan to clean up the repository further and release the model checkpoint on the HuggingFace model hub in the next 2 weeks.
 
-## Running the Paraphraser model (DIPPER)
+### Running the Paraphraser model (DIPPER)
 
-### Requirements
+**Requirements**
 
 ```
 # required
