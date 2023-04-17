@@ -21,13 +21,11 @@ from dipper_paraphrases.sim.models import load_model
 from dipper_paraphrases.sim.embed_sentences import embed_all, similarity
 
 
-# load SCRAPER_API_KEY from os environment
-SCRAPER_API_KEY = os.getenv("SCRAPER_API_KEY")
 GPTZERO_API_KEYS = [os.getenv(f"GPTZERO_API_KEY{i}") for i in range(1, 11)]
 gptzero_idx = 0
 
 lfqa_database = None
-with open("lfqa-data/questions_sampled.jsonl", "r") as f:
+with open("lfqa-data/inputs.jsonl", "r") as f:
     lfqa_database = [json.loads(x) for x in f.read().strip().split("\n")]
     lfqa_database = {dd["prefix"]: dd for dd in lfqa_database}
 
@@ -46,12 +44,14 @@ def get_longest_answer(prefix):
     return longest_answer.replace("@@@@@@", "\n").strip()
 
 def load_shared_args(parser):
-    parser.add_argument('--base_model', default="none", type=str)
+    parser.add_argument('--output_file', default="lfqa-data/gpt2_xl_strength_0.0_frac_0.5_300_len_top_p_0.9.jsonl_pp")
+    parser.add_argument('--base_model', default="gpt2-xl", type=str)
+    parser.add_argument('--detector_cache', default="lfqa-data/openai_cache.json")
     parser.add_argument('--num_shards', default=1, type=int)
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--sim_threshold', default=0.75, type=float)
     parser.add_argument('--target_fpr', default=0.01, type=float)
-    parser.add_argument('--sim_cache', default="watermark_outputs/sim_cache.pkl")
+    parser.add_argument('--sim_cache', default="lfqa-data/sim_cache.pkl")
     parser.add_argument('--paraphrase_type', default='lex_40_order_100', type=str)
 
 def print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args):
@@ -64,9 +64,9 @@ def do_sim_stuff(gen_tokens, gold_tokens, pp0_tokens, sim_cache, sim_fn, args, s
         sim_gold.append(False)
         sim_pp0.append(False)
         return
-    gen_vec, sim_cache1 = sim_fn(gen_tokens, sim_cache)
-    gold_vec, sim_cache2 = sim_fn(gold_tokens, sim_cache)
-    pp0_vec, sim_cache3 = sim_fn(pp0_tokens, sim_cache)
+    gen_vec, _ = sim_fn(gen_tokens, sim_cache)
+    gold_vec, _ = sim_fn(gold_tokens, sim_cache)
+    pp0_vec, _ = sim_fn(pp0_tokens, sim_cache)
     sim_gold.append(similarity(gen_vec, gold_vec) > args.sim_threshold)
     sim_pp0.append(similarity(gen_vec, pp0_vec) > args.sim_threshold)
 
@@ -84,8 +84,8 @@ def load_sim_stuff(args):
         sim_cache = {}
 
     # load paraphrase model
-    if os.path.exists("dipper_paraphrases/sim/paraphrase-at-scale/model.para.lc.100.pt"):
-        paraphrase_model = load_model("dipper_paraphrases/sim/paraphrase-at-scale/model.para.lc.100.pt")
+    if os.path.exists("dipper_paraphrases/sim/model.para.lc.100.pt"):
+        paraphrase_model = load_model("dipper_paraphrases/sim/model.para.lc.100.pt")
         paraphrase_model.eval()
         embedder = functools.partial(embed_all, model=paraphrase_model, disable=True)
         sim_fn = functools.partial(get_sim_vectors, embedder=embedder)
@@ -103,7 +103,7 @@ def get_sim_vectors(sequence, cache, embedder):
         cache_updated = True
     return gen_vec, cache_updated
 
-def print_tpr_target(fpr, tpr, name, target_fpr, gold_scores):
+def print_tpr_target(fpr, tpr, name, target_fpr):
     indices = None
     for i in range(len(fpr)):
         if fpr[i] >= target_fpr:
@@ -114,13 +114,10 @@ def print_tpr_target(fpr, tpr, name, target_fpr, gold_scores):
             break
 
     if indices is None:
-        print(f"{name} TPR at {target_fpr} FPR: {tpr[-1]}. FPR is too high.")
+        print(f"{name} TPR at {target_fpr*100}% FPR: {tpr[-1]}. FPR is too high.")
     else:
         tpr_values = [tpr[i] for i in indices]
-        fpr_values = [fpr[i] for i in indices]
-        print(f"{name} TPR at {target_fpr} FPR: {np.mean(tpr_values)}. FPR is {np.mean(fpr_values)}")
-    gold_scores_sorted = sorted(gold_scores, reverse=True)
-    print(f"Target threshold = {gold_scores_sorted[:int(len(gold_scores) * target_fpr) + 1]}")
+        print(f"{name} TPR at {target_fpr*100}% FPR: {np.mean(tpr_values) * 100:5.1f}%")
 
 def get_roc(human_scores, machine_scores, max_fpr=1.0):
     fpr, tpr, _ = roc_curve([0] * len(human_scores) + [1] * len(machine_scores), human_scores + machine_scores)
@@ -270,8 +267,6 @@ def gptzero_detect(generation, cache):
         response = requests.post("https://api.gptzero.me/v2/predict/text", json=obj, headers=headers)
         if response.status_code != 200:
             print(response.text)
-            # print("Waiting 1 hour for GPT Zero API quota to reset...")
-            # time.sleep(3600)
             gptzero_idx  = (gptzero_idx + 1) % len(GPTZERO_API_KEYS)
             print("Switching to GPT Zero API key ", gptzero_idx)
             headers = {"X-Api-Key": GPTZERO_API_KEYS[gptzero_idx]}
@@ -279,7 +274,6 @@ def gptzero_detect(generation, cache):
         try:
             response = json.loads(response.text)['documents'][0]
         except:
-            # response = gptzero_detect_proxy(generation)
             print(response.text)
             print("exiting...")
             print("Final key used was ", gptzero_idx)

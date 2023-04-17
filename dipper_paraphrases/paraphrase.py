@@ -16,8 +16,8 @@ nltk.download('punkt')
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', default="watermark_outputs/gpt2_xl_strength_2.0_frac_0.5.jsonl")
-parser.add_argument('--model', type=str, default='para-paraphrase-ctx-t5-xxl', help='data to paraphrase')
+parser.add_argument('--output_file', default="lfqa-data/gpt2_xl_strength_2.0_frac_0.5_300_len_top_p_0.9.jsonl")
+parser.add_argument('--model', type=str, default='kalpeshk2011/dipper-paraphraser-xxl', help='data to paraphrase')
 parser.add_argument("--refresh", action='store_true', help="Renew the data")
 parser.add_argument('--num_shards', type=int, default=1, help='data to paraphrase')
 parser.add_argument('--local_rank', type=int, default=0, help='data to paraphrase')

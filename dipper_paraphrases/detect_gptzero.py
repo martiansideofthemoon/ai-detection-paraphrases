@@ -1,6 +1,7 @@
 import argparse
 import json
 import nltk
+import numpy as np
 import os
 from pathlib import Path
 import pickle
@@ -11,14 +12,11 @@ nltk.download('punkt')
 
 parser = argparse.ArgumentParser()
 load_shared_args(parser)
-# watermark_outputs/gpt2_xl_strength_0.0_frac_0.5_300_len_top_p_0.9.jsonl.shard_0
-parser.add_argument('--output_file', default="watermark_outputs/gpt3_300_len.jsonl_pp")
-parser.add_argument('--detector_cache', default="watermark_outputs/gptzero_cache.json")
+parser.add_argument('--output_file', default="lfqa-data/gpt2_xl_strength_0.0_frac_0.5_300_len_top_p_0.9.jsonl_pp")
+parser.add_argument('--detector_cache', default="lfqa-data/gptzero_cache.json")
 parser.add_argument('--threshold', default=0.9, type=float)
 parser.add_argument('--total_chars', default=250, type=float)
 args = parser.parse_args()
-
-# model_size = Path(args.output_file).stem.split("_")[1]
 
 # read args.output_file
 with open(args.output_file, "r") as f:
@@ -74,7 +72,8 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
     acc_gold.append(gold_prob)
     acc_pp0.append(pp0_prob)
 
-    print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
+    # uncomment below to get accuracies at the currently set value of --threshold
+    # print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
 
     if cache1 or cache2 or cache3:
         # save cache
@@ -82,16 +81,19 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
             json.dump(cache, f)
 
     if len(acc_gold) >= 700:
+        # Stopping early due to GPTZero API rate limit restrictions
         stats = get_roc(acc_gold, acc_gen)
         stats2 = get_roc(acc_gold, acc_pp0)
-        print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-        print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
-        # with open("detect-plots/gptzero.pkl", 'wb') as f:
-        #     pickle.dump((stats, stats2), f)
+        print_tpr_target(stats[0], stats[1], "generation", args.target_fpr)
+        print_tpr_target(stats2[0], stats2[1], "paraphrase", args.target_fpr)
+        with open("roc_plots/gptzero.pkl", 'wb') as f:
+            pickle.dump((stats, stats2), f)
+        if sim_fn is not None:
+            print(f"Sim between paraphrase and generation = {np.mean(sim_pp0)*100:.1f}%")
         import pdb; pdb.set_trace()
         pass
 
 stats = get_roc(acc_gold, acc_gen)
 stats2 = get_roc(acc_gold, acc_pp0)
-print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
+print_tpr_target(stats[0], stats[1], "gen", args.target_fpr)
+print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr)

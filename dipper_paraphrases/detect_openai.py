@@ -10,9 +10,7 @@ import numpy as np
 
 parser = argparse.ArgumentParser()
 load_shared_args(parser)
-parser.add_argument('--output_file', default="watermark_outputs/gpt3_300_len.jsonl_pp")
 parser.add_argument('--threshold', default=0.98, type=float)
-parser.add_argument('--detector_cache', default="watermark_outputs/detector_cache.json")
 parser.add_argument('--total_chars', default=1000, type=float)
 args = parser.parse_args()
 
@@ -51,9 +49,6 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
     pp_target_tokens = dd['paraphrase_outputs']['lex_40_order_100']['output'][0]
     pp0_tokens = dd['paraphrase_outputs'][args.paraphrase_type]['output'][0]
 
-    # if len(pp_target_tokens) < 1000 and len(gen_tokens) > 1000:
-    #     import pdb; pdb.set_trace()
-    #     pass
     if "lfqa" in args.output_file:
         gold_tokens = get_longest_answer(dd['prefix'])
     else:
@@ -77,7 +72,8 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
     acc_gold.append(gold_prob)
     acc_pp0.append(pp0_prob)
 
-    print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
+    # uncomment below to get accuracies at the currently set value of --threshold
+    # print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
 
     # write cache
     if cache1 or cache2 or cache3:
@@ -87,8 +83,10 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
 stats = get_roc(acc_gold, acc_gen)
 stats2 = get_roc(acc_gold, acc_pp0)
 
-print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
+print_tpr_target(stats[0], stats[1], "generation", args.target_fpr)
+print_tpr_target(stats2[0], stats2[1], "paraphrase", args.target_fpr)
+if sim_fn is not None:
+    print(f"Sim between paraphrase and generation = {np.mean(sim_pp0)*100:.1f}%")
 
-# with open("detect-plots/openai.pkl", 'wb') as f:
-#     pickle.dump((stats, stats2), f)
+with open("roc_plots/openai.pkl", 'wb') as f:
+    pickle.dump((stats, stats2), f)

@@ -16,16 +16,15 @@ nltk.download('punkt')
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', default="rankgen_prefix_vary_length/wiki_gpt_md_xl_all_512_128_beam.jsonl")
-parser.add_argument('--output_dir', default="watermark_outputs")
+parser.add_argument('--dataset', default="lfqa-data/inputs.jsonl")
+parser.add_argument('--output_dir', default="lfqa-data")
 parser.add_argument('--model_size', default="13b")
-parser.add_argument('--num_instances', default=100000, type=int)
+parser.add_argument('--num_instances', default=3000, type=int)
 parser.add_argument('--num_samples', default=1, type=int)
 parser.add_argument('--max_new_tokens', default=300, type=int)
 parser.add_argument('--top_k', default=None, type=int)
 parser.add_argument('--top_p', default=0.9, type=float)
 parser.add_argument('--typical_p', default=None, type=float)
-parser.add_argument('--truncate_fraction', default=0.0, type=float)
 parser.add_argument('--num_shards', default=1, type=int)
 parser.add_argument('--local_rank', default=0, type=int)
 parser.add_argument('--strength', default=2.0, type=float)
@@ -38,8 +37,6 @@ with open(args.dataset, "r") as f:
 
 start = time.time()
 tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-{args.model_size}", torch_dtype=torch.float16)
-import pdb; pdb.set_trace()
-pass
 model = AutoModelForCausalLM.from_pretrained(f"facebook/opt-{args.model_size}")
 model.cuda()
 model.eval()

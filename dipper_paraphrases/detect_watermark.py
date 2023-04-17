@@ -15,35 +15,34 @@ from utils import watermark_detect, load_shared_args, get_roc, print_tpr_target,
 
 parser = argparse.ArgumentParser()
 load_shared_args(parser)
-parser.add_argument('--output_file', default="watermark_outputs/gpt2_xl_strength_2.0_frac_0.5_300_len_top_p_0.9.jsonl_pp_pp")
-parser.add_argument('--watermark_cache', default="watermark_outputs/watermark_cache.json")
 parser.add_argument('--threshold', default=4.0, type=float)
 parser.add_argument('--total_tokens', default=200, type=int)
 parser.add_argument('--paraphrase_no_exist_behavior', default='skip', type=str)
 args = parser.parse_args()
 
-model_size, watermark_fraction = Path(args.output_file).stem.split("_")[:2], float(Path(args.output_file).stem.split("_")[5])
-if args.base_model:
-    tokenizer = AutoTokenizer.from_pretrained(args.base_model, torch_dtype=torch.float16)
-else:
-    tokenizer = AutoTokenizer.from_pretrained("-".join(model_size))
+model_size, watermark_fraction = Path(args.output_file).stem.split("_")[1], float(Path(args.output_file).stem.split("_")[5])
+
+if "/gpt2" in args.output_file:
+    tokenizer = AutoTokenizer.from_pretrained(f"gpt2-{model_size}", torch_dtype=torch.float16)
+elif "/opt" in args.output_file:
+    tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-{model_size}", torch_dtype=torch.float16)
 
 # read args.output_file
 with open(args.output_file, "r") as f:
     data = [json.loads(x) for x in f.read().strip().split("\n")]
 
-if os.path.exists(args.watermark_cache):
-    with open(args.watermark_cache, "r") as f:
+if os.path.exists(args.detector_cache):
+    with open(args.detector_cache, "r") as f:
         cache = json.load(f)
     # save a copy of cache as a backup
-    with open(args.watermark_cache + ".bak", "w") as f:
+    with open(args.detector_cache + ".bak", "w") as f:
         json.dump(cache, f)
 else:
     cache = {}
 
 sim_gold, sim_pp0, sim_cache, sim_fn = load_sim_stuff(args)
 
-if args.base_model.startswith("facebook/opt"):
+if "/opt" in args.output_file:
     vocab_size = 50272
 else:
     vocab_size = tokenizer.vocab_size
@@ -97,23 +96,21 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
     acc_gold.append(gold_z)
     acc_pp0.append(pp0_z)
 
-    print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
+    # uncomment below to get accuracies at the currently set value of --threshold
+    # print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
 
     if cache1 or cache2 or cache3:
         # save cache
         with open(args.watermark_cache, "w") as f:
             json.dump(cache, f)
 
-    # if sim_cache1 or sim_cache2 or sim_cache3:
-    #     # save cache
-    #     with open(args.sim_cache, "wb") as f:
-    #         pickle.dump(sim_cache, f)
-
 stats = get_roc(acc_gold, acc_gen)
 stats2 = get_roc(acc_gold, acc_pp0)
 
-print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
+print_tpr_target(stats[0], stats[1], "generation", args.target_fpr)
+print_tpr_target(stats2[0], stats2[1], "paraphrase", args.target_fpr)
+if sim_fn is not None:
+    print(f"Sim between paraphrase and generation = {np.mean(sim_pp0)*100:.1f}%")
 
-# with open("detect-plots/watermark.pkl", 'wb') as f:
-#     pickle.dump((plot1, plot2), f)
+with open("roc_plots/watermark.pkl", 'wb') as f:
+    pickle.dump((stats, stats2), f)

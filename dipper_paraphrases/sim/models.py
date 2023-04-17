@@ -12,7 +12,7 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from dipper_paraphrases.sim.evaluate_sts import evaluate_sts
 from torch import optim
 
-def load_model(path, gpu=1, sp_model="dipper_paraphrases/sim/paraphrase-at-scale/paranmt.model"):
+def load_model(path, gpu=1, sp_model="dipper_paraphrases/sim/paranmt.model"):
     if not gpu:
         model = torch.load(path, map_location=torch.device('cpu'))
     else:

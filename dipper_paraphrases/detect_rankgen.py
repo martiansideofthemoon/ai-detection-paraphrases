@@ -1,6 +1,8 @@
 import argparse
 import json
 import os
+import pickle
+import numpy as np
 import tqdm
 from utils import rankgen_detect, get_roc, print_tpr_target, print_accuracies, load_shared_args, do_sim_stuff, load_sim_stuff
 from rankgen import RankGenEncoder
@@ -8,9 +10,7 @@ from rankgen import RankGenEncoder
 
 parser = argparse.ArgumentParser()
 load_shared_args(parser)
-parser.add_argument('--output_file', default="watermark_outputs/gpt3_davinci_003_300_len.jsonl_pp")
 parser.add_argument('--threshold', default=-7.0, type=float)
-parser.add_argument('--rankgen_cache', default="watermark_outputs/rankgen_cache.json")
 parser.add_argument('--min_words', default=50, type=float)
 args = parser.parse_args()
 
@@ -18,11 +18,11 @@ args = parser.parse_args()
 with open(args.output_file, "r") as f:
     data = [json.loads(x) for x in f.read().strip().split("\n")]
 
-if os.path.exists(args.rankgen_cache):
-    with open(args.rankgen_cache, "r") as f:
+if os.path.exists(args.detector_cache):
+    with open(args.detector_cache, "r") as f:
         cache = json.load(f)
     # save a copy of cache as a backup
-    with open(args.rankgen_cache + ".bak", "w") as f:
+    with open(args.detector_cache + ".bak", "w") as f:
         json.dump(cache, f)
 else:
     cache = {}
@@ -73,18 +73,22 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
 
     do_sim_stuff(gen_tokens, gold_tokens, pp0_tokens, sim_cache, sim_fn, args, sim_gold, sim_pp0)
 
-    print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
+    # uncomment below to get accuracies at the currently set value of --threshold
+    # print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
 
     # write cache
     if cache1 or cache2 or cache3:
-        with open(args.rankgen_cache, "w") as f:
+        with open(args.detector_cache, "w") as f:
             json.dump(cache, f)
 
 stats = get_roc(acc_gold, acc_gen)
 stats2 = get_roc(acc_gold, acc_pp0)
 
-print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
+print_tpr_target(stats[0], stats[1], "generation", args.target_fpr)
+print_tpr_target(stats2[0], stats2[1], "paraphrase", args.target_fpr)
+if sim_fn is not None:
+    print(f"Sim between paraphrase and generation = {np.mean(sim_pp0)*100:.1f}%")
 
-# with open("detect-plots/openai.pkl", 'wb') as f:
-#     pickle.dump((stats, stats2), f)
+with open("roc_plots/watermark.pkl", 'wb') as f:
+    pickle.dump((stats, stats2), f)
+

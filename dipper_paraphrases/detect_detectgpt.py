@@ -12,8 +12,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2Se
 
 parser = argparse.ArgumentParser()
 load_shared_args(parser)
-parser.add_argument('--output_file', default="watermark_outputs/gpt2_xl_strength_0.0_frac_0.5_300_len_top_p_0.9.jsonl_pp")
-parser.add_argument('--detectgpt_cache', default="watermark_outputs/detectgpt_cache_gpt2_xl.json")
 parser.add_argument('--threshold', default=3, type=float)
 parser.add_argument('--mask_model', default="t5-3b", type=str)
 parser.add_argument('--min_words', default=50, type=float)
@@ -51,7 +49,7 @@ with open(args.output_file, "r") as f:
 if args.num_shards > 1:
     partitions = form_partitions(data, args.num_shards)
     data = partitions[args.local_rank]
-    args.detectgpt_cache = f'{args.detectgpt_cache}.shard_{args.local_rank}'
+    args.detector_cache = f'{args.detector_cache}.shard_{args.local_rank}'
 
 acc_gen = []
 acc_gold = []
@@ -61,11 +59,11 @@ sim_gold, sim_pp0, sim_cache, sim_fn = load_sim_stuff(args)
 
 num_paraphrase_pts = len([x for x in data if "paraphrase_outputs" in x])
 
-if os.path.exists(args.detectgpt_cache):
-    with open(args.detectgpt_cache, "r") as f:
+if os.path.exists(args.detector_cache):
+    with open(args.detector_cache, "r") as f:
         cache = json.load(f)
     # save a copy of cache as a backup
-    with open(args.detectgpt_cache + ".bak", "w") as f:
+    with open(args.detector_cache + ".bak", "w") as f:
         json.dump(cache, f)
 else:
     cache = {}
@@ -115,23 +113,19 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=num_paraphrase_pts):
     acc_gold.append(gold_z)
     acc_pp0.append(pp0_z)
 
-    print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
+    # uncomment below to get accuracies at the currently set value of --threshold
+    # print_accuracies(acc_gen, acc_gold, acc_pp0, sim_gold, sim_pp0, args)
 
     if cache1 or cache2 or cache3:
         # save cache
         with open(args.detectgpt_cache, "w") as f:
             json.dump(cache, f)
 
-    # if sim_available and (sim_cache1 or sim_cache2 or sim_cache3):
-    #     # save cache
-    #     with open(args.sim_cache, "wb") as f:
-    #         pickle.dump(sim_cache, f)
 
 stats = get_roc(acc_gold, acc_gen)
 stats2 = get_roc(acc_gold, acc_pp0)
-print_tpr_target(stats[0], stats[1], "gen", args.target_fpr, acc_gold)
-print_tpr_target(stats2[0], stats2[1], "pp0", args.target_fpr, acc_gold)
-# with open("detect-plots/detectgpt.pkl", 'wb') as f:
-#     pickle.dump((stats, stats2), f)
-import pdb; pdb.set_trace()
-pass
+print_tpr_target(stats[0], stats[1], "generation", args.target_fpr)
+print_tpr_target(stats2[0], stats2[1], "paraphrase", args.target_fpr)
+
+with open("roc_plots/detectgpt.pkl", 'wb') as f:
+    pickle.dump((stats, stats2), f)

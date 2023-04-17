@@ -58,7 +58,7 @@ class DipperParaphraser(object):
 if __name__ == "__main__":
     # Example usage
     # dp = DipperParaphraser(model="/work/kalpeshkrish_umass_edu/better-paraphrases/para-paraphrase-ctx-t5-xxl")
-    dp = DipperParaphraser()
+    dp = DipperParaphraser(model="kalpeshk2011/dipper-paraphraser-xxl")
 
     prompt = "Tracy is a fox."
     input_text = "It is quick and brown. It jumps over the lazy dog."

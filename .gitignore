@@ -75,3 +75,6 @@ lfqa-data
 open-generation-data
 
 dipper-paraphraser-xxl
+roc_plots
+dipper_paraphrases/sim/model.para.lc.100.pt
+dipper_paraphrases/sim/paranmt.model
