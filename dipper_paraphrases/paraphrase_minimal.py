@@ -63,13 +63,13 @@ if __name__ == "__main__":
     prompt = "Tracy is a fox."
     input_text = "It is quick and brown. It jumps over the lazy dog."
 
-    output_l60_greedy = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, prefix=prompt, do_sample=False, max_length=512)
-    output_l60_o60_greedy = dp.paraphrase(input_text, lex_diversity=60, order_diversity=60, prefix=prompt, do_sample=False, max_length=512)
-    output_l60_sample = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
+    output_l60_greedy = dp.paraphrase(input_text, lex_diversity=80, order_diversity=0, prefix=prompt, do_sample=False, max_length=512)
+    output_l60_o60_greedy = dp.paraphrase(input_text, lex_diversity=80, order_diversity=60, prefix=prompt, do_sample=False, max_length=512)
+    output_l60_sample = dp.paraphrase(input_text, lex_diversity=80, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
     print(f"Input = {prompt} <sent> {input_text} </sent>\n")
-    print(f"Output (Lexical diversity = 60, Greedy) = {output_l60_greedy}\n")
-    print(f"Output (Lexical diversity = 60, Order diversity = 60, Greedy) = {output_l60_o60_greedy}\n")
-    print(f"Output (Lexical diversity = 60, Sample p = 0.75) = {output_l60_sample}\n")
+    print(f"Output (Lexical diversity = 80, Greedy) = {output_l60_greedy}\n")
+    print(f"Output (Lexical diversity = 80, Order diversity = 60, Greedy) = {output_l60_o60_greedy}\n")
+    print(f"Output (Lexical diversity = 80, Sample p = 0.75) = {output_l60_sample}\n")
     print("--------------------\n")
 
     prompt = "In a shocking finding, scientist discovered a herd of unicorns living in a remote valley."
