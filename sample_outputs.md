@@ -1,8 +1,6 @@
 ```
 Input = Tracy is a fox. <sent> It is quick and brown. It jumps over the lazy dog. </sent>
 
-Output (Lexical diversity = 80, Greedy) =  It is quick and brown. It jumps over the lazy dog.
-
 Output (Lexical diversity = 80, Order diversity = 60, Greedy) =  She jumps over the lazy dog. She is brown and quick.
 
 Output (Lexical diversity = 80, Sample p = 0.75) =  It is quick and brown. It leaps over the dog.
