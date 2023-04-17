@@ -4,7 +4,7 @@
 [![arxiv](https://img.shields.io/badge/arXiv-2303.13408-b31b1b.svg)](https://arxiv.org/abs/2303.13408)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf). We have currently released our model checkpoint and a script to paraphrase data (see details below).
+This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf), "Paraphrasing evades detectors of AI-generated text, but retrieval is an effective defense". We have currently released our model checkpoint and a script to paraphrase data (see details below).
 
 ### Updates
 
@@ -44,11 +44,11 @@ There are two minor differences between the actual model and the paper's descrip
 
 2. The lexical and order diversity codes used by the actual model correspond to "similarity" rather than "diversity". For a diversity of X, please use the control code value `100 - X`. In other words, L60-O60 in the paper corresponds to `lex = 40, order = 40` as the control code input to the model.
 
-This is all documented in our minimal sample script to run DIPPER, [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py).
+This is all documented in our minimal sample script to run DIPPER, [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py), and also in footnote 6 in our [paper](https://arxiv.org/pdf/2303.13408.pdf).
 
 ### Reproducing experiments in the paper
 
-
+Dataset: 
 
 ### Citation
 
