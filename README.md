@@ -4,11 +4,11 @@
 [![arxiv](https://img.shields.io/badge/arXiv-2303.13408-b31b1b.svg)](https://arxiv.org/abs/2303.13408)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf), "Paraphrasing evades detectors of AI-generated text, but retrieval is an effective defense". We have currently released our model checkpoint and a script to paraphrase data (see details below).
+This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf), "Paraphrasing evades detectors of AI-generated text, but retrieval is an effective defense".
 
 ### Updates
 
-* (April 2023) We have now released DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
+* (April 2023) We have now released our paraphraser DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
 * (April 2023) Benchmark data, preprocessed paraphrases and scripts to reproduce the paper's experiments are now available!
 
 ### Running the paraphraser model (DIPPER)
@@ -18,11 +18,12 @@ This is the official repository for our new [preprint](https://arxiv.org/pdf/230
 Since DIPPER is a 11B parameter model, please use a GPU with at least 40GB of memory to reproduce the experiments in the paper. Lower precision approximations or DeepSpeed optimizations may also be fine on lower memory GPUs, but we have not tested them in our experiments.
 
 ```
-# required
+# required (for paraphrasing)
 pip install torch transformers sklearn nltk
 pip install --editable .
-# optional
-pip install openai rankgen retriv
+
+# optional (needed for some detection experiments)
+pip install openai rankgen retriv sentencepiece
 ```
 
 **Model Download**
