@@ -1,24 +1,37 @@
 ## Paraphrasing evades detectors of AI-generated text, but retrieval is an effective defense
 
-This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf). We have currently released our model checkpoint and a script to paraphrase data (see details below). We plan to clean up the repository further and release the model checkpoint on the HuggingFace model hub in the next 2 weeks.
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-red.svg)](#python)
+[![arxiv](https://img.shields.io/badge/arXiv-2303.13408-b31b1b.svg)](https://arxiv.org/abs/2303.13408)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+This is the official repository for our new [preprint](https://arxiv.org/pdf/2303.13408.pdf). We have currently released our model checkpoint and a script to paraphrase data (see details below).
+
+### Updates
+
+* (April 2023) We have now released DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
 
 ### Running the Paraphraser model (DIPPER)
 
 **Requirements**
 
+Since DIPPER is a 11B parameter model, please use a GPU with at least 40GB of memory to reproduce the experiments in the paper. Lower precision approximations or DeepSpeed optimizations may also be fine on lower memory GPUs, but we have not tested them in our experiments.
+
 ```
 # required
-pip install torch
-pip install transformers
-pip install sklearn
-pip install nltk
+pip install torch transformers sklearn nltk
 # optional
-pip install openai
-pip install rankgen
+pip install openai rankgen
 ```
 
+**Usage - HuggingFace Hub**
+
+**HuggingFace Model Hub link**: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl  
+**Script**: [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py)
+
+**Usage - Manual Download**
+
 **Checkpoint**: https://drive.google.com/file/d/1LJJ1P5X2An0kMn8WAAAJBmxBuNS-5GiK/view?usp=sharing  
-**Script**: [`dipper_paraphrases/paraphrase.py`](dipper_paraphrases/paraphrase.py)
+In [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py), uncomment the line `dp = DipperParaphraser(model="...")` and specify your model checkpoint path.
 
 Please read the important note in the next section to understand the differences from the paper.
 
