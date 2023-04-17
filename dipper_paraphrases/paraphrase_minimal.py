@@ -65,16 +65,15 @@ if __name__ == "__main__":
     output_l60_greedy = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, prefix=prompt, do_sample=False, max_length=512)
     output_l60_o60_greedy = dp.paraphrase(input_text, lex_diversity=60, order_diversity=60, prefix=prompt, do_sample=False, max_length=512)
     output_l60_sample = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
+    print(f"Input = {prompt} <sent> {input_text} </sent>\n")
     print(f"Output (Lexical diversity = 60, Greedy) = {output_l60_greedy}\n")
     print(f"Output (Lexical diversity = 60, Order diversity = 60, Greedy) = {output_l60_o60_greedy}\n")
-    print(f"Output (Lexical diversity = 60, Sample p = 0.75) = {output_l60_sample}")
+    print(f"Output (Lexical diversity = 60, Sample p = 0.75) = {output_l60_sample}\n")
+    print("--------------------\n")
 
     prompt = "In a shocking finding, scientist discovered a herd of unicorns living in a remote valley."
     input_text = "They have never been known to mingle with humans. Today, it is believed these unicorns live in an unspoilt environment which is surrounded by mountains. Its edge is protected by a thick wattle of wattle trees, giving it a majestic appearance. Along with their so-called miracle of multicolored coat, their golden coloured feather makes them look like mirages. Some of them are rumored to be capable of speaking a large amount of different languages. They feed on elk and goats as they were selected from those animals that possess a fierceness to them, and can \"eat\" them with their long horns."
 
-    input_text = prompt.strip() + " <sent> " + input_text.strip() + " </sent>"
-
-    print(f"Input = {input_text}\n")
+    print(f"Input = {prompt} <sent> {input_text} </sent>\n")
     output_l60_sample = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
     print(f"Output (Lexical diversity = 60, Sample p = 0.75) = {output_l60_sample}\n")
-    print("--------------------")
