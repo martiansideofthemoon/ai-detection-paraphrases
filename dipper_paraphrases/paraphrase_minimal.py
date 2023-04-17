@@ -2,6 +2,7 @@ import time
 import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
+import nltk
 from nltk.tokenize import sent_tokenize
 nltk.download('punkt')
 
