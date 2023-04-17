@@ -9,6 +9,7 @@ This is the official repository for our new [preprint](https://arxiv.org/pdf/230
 ### Updates
 
 * (April 2023) We have now released DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
+* (April 2023) Benchmark data, preprocessed paraphrases and scripts to reproduce the paper's experiments are now available!
 
 ### Running the paraphraser model (DIPPER)
 
