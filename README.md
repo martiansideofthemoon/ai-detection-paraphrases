@@ -10,7 +10,7 @@ This is the official repository for our new [preprint](https://arxiv.org/pdf/230
 
 * (April 2023) We have now released DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
 
-### Running the Paraphraser model (DIPPER)
+### Running the paraphraser model (DIPPER)
 
 **Requirements**
 
@@ -23,19 +23,19 @@ pip install torch transformers sklearn nltk
 pip install openai rankgen
 ```
 
-**Usage - HuggingFace Hub**
+**Model Download**
 
-**HuggingFace Model Hub link**: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl  
-**Script**: [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py)
+(from HuggingFace)
 
-**Usage - Manual Download**
+HuggingFace Model Hub link: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl  
+Script: [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py)
 
-**Checkpoint**: https://drive.google.com/file/d/1LJJ1P5X2An0kMn8WAAAJBmxBuNS-5GiK/view?usp=sharing  
-In [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py), uncomment the line `dp = DipperParaphraser(model="...")` and specify your model checkpoint path.
+(manual download)
 
-Please read the important note in the next section to understand the differences from the paper.
+Checkpoint: https://drive.google.com/file/d/1LJJ1P5X2An0kMn8WAAAJBmxBuNS-5GiK/view?usp=sharing  
+To run this downloaded model, in [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py), uncomment the line `dp = DipperParaphraser(model="...")` and specify your model checkpoint path.
 
-### Paraphraser notes (differences from paper)
+**(IMPORTANT) paraphraser differences from paper**
 
 There are two minor differences between the actual model and the paper's description:
 
@@ -43,7 +43,11 @@ There are two minor differences between the actual model and the paper's descrip
 
 2. The lexical and order diversity codes used by the actual model correspond to "similarity" rather than "diversity". For a diversity of X, please use the control code value `100 - X`. In other words, L60-O60 in the paper corresponds to `lex = 40, order = 40` as the control code input to the model.
 
-This is all documented in our sample script to run DIPPER, [`dipper_paraphrases/paraphrase.py`](dipper_paraphrases/paraphrase.py).
+This is all documented in our minimal sample script to run DIPPER, [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py).
+
+### Reproducing experiments in the paper
+
+
 
 ### Citation
 

@@ -44,11 +44,10 @@ if __name__ == "__main__":
     # dp = DipperParaphraser(model="/work/kalpeshkrish_umass_edu/better-paraphrases/para-paraphrase-ctx-t5-xxl")
     dp = DipperParaphraser()
 
-
     prompt = "In a shocking finding, scientist discovered a herd of unicorns living in a remote valley."
     input_text = "They have never been known to mingle with humans. Today, it is believed these unicorns live in an unspoilt environment which is surrounded by mountains. Its edge is protected by a thick wattle of wattle trees, giving it a majestic appearance. Along with their so-called miracle of multicolored coat, their golden coloured feather makes them look like mirages. Some of them are rumored to be capable of speaking a large amount of different languages. They feed on elk and goats as they were selected from those animals that possess a fierceness to them, and can \"eat\" them with their long horns."
 
-    input_text = prompt.strip() + " " + input_text.strip()
+    input_text = prompt.strip() + " <sent> " + input_text.strip() + " </sent>"
 
     print(f"Input = {input_text}")
     output_l60_greedy = dp.paraphrase(input_text, lex_diversity=60, order_diversity=0, do_sample=False)

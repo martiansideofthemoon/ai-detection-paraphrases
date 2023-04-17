@@ -71,5 +71,7 @@ watermark_outputs/
 candidates_*.jsonl*
 detect-plots
 rankgen_train
+lfqa-data
+
 
 dipper-paraphraser-xxl
