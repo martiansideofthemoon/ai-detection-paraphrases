@@ -36,6 +36,10 @@ Script: [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphra
 Checkpoint: https://drive.google.com/file/d/1LJJ1P5X2An0kMn8WAAAJBmxBuNS-5GiK/view?usp=sharing  
 To run this downloaded model, in [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py), uncomment the line `dp = DipperParaphraser(model="...")` and specify your model checkpoint path.
 
+**Verify DIPPER is working**
+
+Please run the script [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py) and compare the outputs with [`sample_outputs.md`](sample_outputs.md). The greedy decoded outputs should exactly match, while the top_p samples will have some differences from the sample outputs but have higher diversity.
+
 **(IMPORTANT) paraphraser differences from paper**
 
 There are two minor differences between the actual model and the paper's description:

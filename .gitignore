@@ -72,6 +72,6 @@ candidates_*.jsonl*
 detect-plots
 rankgen_train
 lfqa-data
-
+open-generation-data
 
 dipper-paraphraser-xxl
