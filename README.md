@@ -19,6 +19,7 @@ Since DIPPER is a 11B parameter model, please use a GPU with at least 40GB of me
 ```
 # required
 pip install torch transformers sklearn nltk
+pip install --editable .
 # optional
 pip install openai rankgen
 ```
