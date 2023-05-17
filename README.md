@@ -8,6 +8,7 @@ This is the official repository for our new [preprint](https://arxiv.org/pdf/230
 
 ### Updates
 
+* (May 2023) The non-contextual ablated version of DIPPER (Section 6.1 of paper) is now available on the HuggingFace model hub! ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl-no-context))
 * (April 2023) We have now released our paraphraser DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
 * (April 2023) Benchmark data, preprocessed paraphrases and scripts to reproduce the paper's experiments are now available!
 
@@ -30,7 +31,10 @@ pip install openai rankgen retriv sentencepiece
 
 *DIPPER from HuggingFace*
 
-HuggingFace Model Hub link: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl  
+HuggingFace Model Hub links -
+full model: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl  
+ablated model without context: https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl-no-context
+
 Script: [`dipper_paraphrases/paraphrase_minimal.py`](dipper_paraphrases/paraphrase_minimal.py)
 
 *DIPPER manual download*
@@ -41,6 +45,10 @@ To run this downloaded model, in [`dipper_paraphrases/paraphrase_minimal.py`](di
 *SIM model*
 
 You could optionally download the SIM model from Wieting et al. 2021 for calculating semantic similarity of the paraphrased outputs. Download the two files in [this link](https://drive.google.com/drive/folders/1rOOYF3ioDD_Nm0sduhD6ZE1xdUQQKqvG?usp=sharing) and place them in [`dipper_paraphrases/sim`](dipper_paraphrases/sim).
+
+*T5X versions*
+
+Please see our official Google Research release here: https://github.com/google-research/google-research/tree/master/dipper
 
 **Verify DIPPER is working**
 
