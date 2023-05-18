@@ -77,8 +77,8 @@ for idx, dd in tqdm.tqdm(enumerate(data), total=len(data)):
 
             for sent_idx in range(0, len(sentences), args.sent_interval):
                 curr_sent_window = " ".join(sentences[sent_idx:sent_idx + args.sent_interval])
-                if "no-ctx" in args.model:
-                    final_input_text = f"lexical = {lex}, order = {order} <sent> {curr_sent_window} </sent>"
+                if "no-context" in args.model:
+                    final_input_text = f"lexical = {lex}, order = {order} {curr_sent_window}"
                 else:
                     final_input_text = f"lexical = {lex}, order = {order} {prefix} <sent> {curr_sent_window} </sent>"
 
