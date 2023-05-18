@@ -8,6 +8,7 @@ This is the official repository for our new [preprint](https://arxiv.org/pdf/230
 
 ### Updates
 
+* (May 2023) The training data for DIPPER is now available [here](https://storage.googleapis.com/gresearch/dipper/dipper-training-data.zip)!
 * (May 2023) The non-contextual ablated version of DIPPER (Section 6.1 of paper) is now available on the HuggingFace model hub! ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl-no-context))
 * (April 2023) We have now released our paraphraser DIPPER on the HuggingFace model hub ([link](https://huggingface.co/kalpeshk2011/dipper-paraphraser-xxl))!
 * (April 2023) Benchmark data, preprocessed paraphrases and scripts to reproduce the paper's experiments are now available!
@@ -67,6 +68,8 @@ This is all documented in our minimal sample script to run DIPPER, [`dipper_para
 ### Reproducing experiments in the paper
 
 Dataset: Download the folders `open-generation-data` and `lfqa-data` from [this Google Drive link](https://drive.google.com/drive/folders/1mPROenBB0fzLO9AX4fe71k0UYv0xt3X1?usp=share_link). Place them in your root folder. Reproducing the experiments in the paper has three steps. We have already done Step 1 and Step 2 and added preprocessed data to Google Drive link.
+
+Training dataset for DIPPER (not needed for inference/detection experiments): Download the ZIP file from [this link](https://storage.googleapis.com/gresearch/dipper/dipper-training-data.zip). The specific files used for training were `par3/translator_pair/sents_[123]/train_ctrl_ctx_*` as well as `par3/gt_translator/sents_3/train_ctrl_ctx_*`.
 
 **Step 1: Generating text from large language models**
 
